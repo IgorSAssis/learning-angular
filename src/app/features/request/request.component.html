@@ -1,0 +1,171 @@
+<nz-card nzTitle="Formulário com validações">
+  <form
+    nz-form
+    nzLayout="vertical"
+    [formGroup]="collaboratorFormGroup"
+    (submit)="submitCollaboratorForm()"
+  >
+    <div nz-row nzGutter="10">
+      <div nz-col nzSpan="4">
+        <nz-form-item>
+          <nz-form-label nzFor="collaborator-name" nzRequired
+            >Nome do colaborador</nz-form-label
+          >
+          <nz-form-control nzErrorTip="O nome do colaborador é obrigatório!">
+            <input
+              nz-input
+              id="collaborator-name"
+              type="text"
+              formControlName="name"
+            />
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="4">
+        <nz-form-item>
+          <nz-form-label nzFor="collaborator-email" nzRequired
+            >Email do colaborador</nz-form-label
+          >
+          <nz-form-control [nzErrorTip]="emailErrorTpl">
+            <input
+              nz-input
+              id="collaborator-email"
+              type="email"
+              formControlName="email"
+            />
+            <ng-template #emailErrorTpl let-control>
+              @if (control.errors?.['required']) { O email do colaborador é
+              obrigatório! } @if (control.errors?.['email']) { Email inválido! }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="4">
+        <nz-form-item>
+          <nz-form-label nzFor="collaborator-age" nzRequired
+            >Idade do colaborador</nz-form-label
+          >
+          <nz-form-control [nzErrorTip]="ageErrorTpl">
+            <input
+              nz-input
+              id="collaborator-age"
+              type="number"
+              formControlName="age"
+            />
+            <ng-template #ageErrorTpl let-control>
+              @if (control.errors?.['required']) { A idade é obrigatória! } @if
+              (control.errors?.['min']) { A idade deve ser maior do que 0! } @if
+              (control.errors?.['max']) { A idade deve ser menor do que 100! }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <div nz-col nzSpan="4">
+        <nz-form-item>
+          <nz-form-label nzFor="collaborator-cpf" nzRequired
+            >CPF do colaborador</nz-form-label
+          >
+          <nz-form-control [nzErrorTip]="cpfErrorTpl">
+            <input
+              nz-input
+              id="collaborator-cpf"
+              type="text"
+              formControlName="cpf"
+              mask="000.000.000-00"
+            />
+
+            <ng-template #cpfErrorTpl let-control>
+              @if (control.errors?.['required']) { CPF é obrigatório! } @if
+              (control.errors?.['mask']) { CPF inválido! }
+            </ng-template>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+    </div>
+    <div nz-row>
+      <div nz-col nzSpan="6">
+        <button nz-button nzType="primary" type="submit">Salvar</button>
+      </div>
+    </div>
+  </form>
+</nz-card>
+
+<nz-card
+  nzTitle="Formulário com select que carrega dados de uma API"
+  style="margin-top: 20px"
+>
+  <div nz-row nzGutter="10" style="margin-bottom: 20px">
+    <div nz-col nzSpan="8">
+      <nz-select
+        nzId="products"
+        nzShowSearch
+        nzAllowClear
+        nzServerSearch
+        nzPlaceHolder="Produtos"
+        style="width: 100%"
+        [nzLoading]="isLoadingProducts"
+        (nzOnSearch)="onSearch($event)"
+        (nzScrollToBottom)="onScrollToBottom()"
+        (ngModelChange)="onSelectedProductChange($event)"
+        [(ngModel)]="selectedProduct"
+      >
+        <nz-option
+          *ngFor="let product of products"
+          [nzLabel]="product.title"
+          [nzValue]="product"
+        ></nz-option
+      ></nz-select>
+    </div>
+
+    <div nz-col nzSpan="5">
+      <button
+        nz-button
+        nzType="primary"
+        type="button"
+        (click)="addProductToTable()"
+        [disabled]="selectedProduct === null"
+      >
+        Adicionar
+      </button>
+    </div>
+  </div>
+
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <nz-table #basicTable [nzData]="selectedProducts">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Price</th>
+            <th>Rating</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let data of basicTable.data; index as i">
+            <td>{{ data.id }}</td>
+            <td>{{ data.title }}</td>
+            <td>
+              {{ data.price | currency : "BRL" : "symbol-narrow" }}
+            </td>
+            <td>{{ data.rating }}</td>
+            <td>
+              <button
+                nz-button
+                nzType="text"
+                nzDanger
+                (click)="removeItemFromTable(i)"
+              >
+                Remove
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</nz-card>
