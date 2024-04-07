@@ -4,7 +4,7 @@ import {
   DEFAULT_CURRENCY_CODE,
   LOCALE_ID,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withHashLocation } from '@angular/router';
 
 import { routes } from './app.routes';
 import { en_US, pt_BR, provideNzI18n } from 'ng-zorro-antd/i18n';
@@ -20,7 +20,7 @@ registerLocaleData(pt);
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(routes),
+    provideRouter(routes, withHashLocation()),
     provideNzI18n(pt_BR),
     importProvidersFrom(FormsModule),
     provideAnimationsAsync(),
