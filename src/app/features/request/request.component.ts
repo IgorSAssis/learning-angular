@@ -25,6 +25,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 
 import { SelectComponent } from '../../shared/components/select/select.component';
 
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 import { ProductService } from '../../services/product/product.service';
 import { Product } from '../../services/product/models/product';
 
@@ -50,6 +51,9 @@ import { Product } from '../../services/product/models/product';
 })
 export class RequestComponent {
   private productService: ProductService = inject(ProductService);
+  private notificationService: NzNotificationService = inject(
+    NzNotificationService
+  );
 
   public collaboratorFormGroup!: FormGroup<CollaboratorFormGroup>;
 
@@ -99,7 +103,29 @@ export class RequestComponent {
   }
 
   submitCollaboratorForm() {
-    console.log(this.collaboratorFormGroup.controls);
+    if (this.collaboratorFormGroup.invalid) {
+      Object.keys(this.collaboratorFormGroup.controls).forEach((key) => {
+        const control =
+          this.collaboratorFormGroup.controls[key as CollaboratorFormGroupType];
+
+        if (control.invalid) {
+          control.markAsTouched();
+          control.updateValueAndValidity();
+        }
+      });
+
+      this.notificationService.warning(
+        'Atenção',
+        'Preencha os campos obrigatórios para conseguir salvar o formulário'
+      );
+      console.log(this.collaboratorFormGroup.controls);
+      return;
+    }
+
+    this.notificationService.success(
+      'Sucesso',
+      'O formulário foi salvo com sucesso!'
+    );
   }
 
   onSearch(value: string) {
@@ -239,3 +265,5 @@ interface ProductFilters {
   limit: number;
   haveMoreToFetch: boolean;
 }
+
+type CollaboratorFormGroupType = keyof CollaboratorFormGroup;
